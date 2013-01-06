@@ -20,23 +20,20 @@ module.exports = {
 // @filter		:: the filter regex
 // $replaceExpr	:: the replace regex
 // @optional	:: if optional, don't throw an error if nothing is found
+// @fullPathKeyNames	:: whether to use the full path as the key name (instead of just the filename)
 function buildDictionary(options) {
 	
-	var files = require('include-all')({
-		dirname: options.dirname,
-		filter: options.filter,
-		optional: options.optional
-	});
-
+	var files = require('include-all')(options);
 	var objects = {};
-	_.each(files, function(object, filename) {
+	_.each(files, function(module, filename) {
+		
 		// If no 'identity' attribute was provided, 
 		// take a guess based on the (case-insensitive) filename
-		if(!object.identity) {
-			object.identity = options.replaceExpr ? filename.replace(options.replaceExpr, "") : filename;
-			object.identity = object.identity.toLowerCase();
+		if(!module.identity) {
+			module.identity = options.replaceExpr ? filename.replace(options.replaceExpr, "") : filename;
+			module.identity = module.identity.toLowerCase();
 		}
-		objects[object.identity] = object;
+		objects[module.identity] = module;
 	});	
 	if(!objects) return {};
 	return objects;

@@ -43,6 +43,7 @@ function buildDictionary(options) {
 					module.identity = module.identity.toLowerCase();
 					keyName = module.identity;
 				}
+				else keyName = module.identity;
 			}
 			objects[keyName] = module;
 		});		

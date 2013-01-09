@@ -10,11 +10,6 @@ module.exports = {
 		options.optional = true;
 		return buildDictionary(options);
 	}
-
-	// federated: function(options) {
-	// 	options.federated = true;
-	// 	return buildDictionary(options);
-	// }
 };
 
 /**
@@ -37,16 +32,21 @@ function buildDictionary(options) {
 	var files = require('include-all')(options);
 	var objects = {};
 
-	_.each(files, function(module, filename) {
-		
-		// If no 'identity' attribute was provided, 
-		// take a guess based on the (case-insensitive) filename
-		if(!module.identity) {
-			module.identity = options.replaceExpr ? filename.replace(options.replaceExpr, "") : filename;
-			module.identity = module.identity.toLowerCase();
-		}
-		objects[module.identity] = module;
-	});	
+		_.each(files, function(module, filename) {
+			var keyName = filename;
+
+			if (options.identity) {
+				// If no 'identity' attribute was provided, 
+				// take a guess based on the (case-insensitive) filename
+				if(!module.identity) {
+					module.identity = options.replaceExpr ? filename.replace(options.replaceExpr, "") : filename;
+					module.identity = module.identity.toLowerCase();
+					keyName = module.identity;
+				}
+			}
+			objects[keyName] = module;
+		});		
+
 	if(!objects) return {};
 	return objects;
 }

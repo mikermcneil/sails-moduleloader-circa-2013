@@ -35,7 +35,7 @@ function buildDictionary(options) {
 		_.each(files, function(module, filename) {
 			var keyName = filename;
 
-			if (options.identity) {
+			if (options.identity !== false) {
 				// If no 'identity' attribute was provided, 
 				// take a guess based on the (case-insensitive) filename
 				if(!module.identity) {

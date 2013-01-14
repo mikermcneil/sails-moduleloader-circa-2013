@@ -1,6 +1,6 @@
 {
   "name": "sails-moduleloader",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "ERROR: No README.md file found!",
   "main": "moduleLoader.js",
   "scripts": {

@@ -40,7 +40,12 @@ function buildDictionary(options) {
 				// take a guess based on the (case-insensitive) filename
 				if(!module.identity) {
 					module.identity = options.replaceExpr ? filename.replace(options.replaceExpr, "") : filename;
-					module.identity = module.identity.toLowerCase();
+					// ignore case by default
+					if (!options.caseSensitive) {
+						module.identity = module.identity.toLowerCase();
+					}
+					module.capIdentity = module.identity;
+					
 					keyName = module.identity;
 				}
 				else keyName = module.identity;

@@ -2,11 +2,24 @@ var _ = require('underscore');
 
 
 module.exports = {
+
+	// Build a dictionary of named modules
+	// (throw an error if the container cannot be loaded)
 	required: function(options) {
 		return buildDictionary(options);
 	},
 
+	// Build a dictionary of named modules
+	// (fail silently if the container cannot be loaded)
 	optional: function(options) {
+		options.optional = true;
+		return buildDictionary(options);
+	},
+
+	// Build a single module object by extending {} with the contents of each module
+	// (fail silently if the container cannot be loaded)
+	aggregate: function(options) {
+		options.aggregate = true;
 		options.optional = true;
 		return buildDictionary(options);
 	}
@@ -30,9 +43,22 @@ options {}
 function buildDictionary(options) {
 	
 	var files = require('include-all')(options);
-	var objects = {};
+	var dictionary = {};
 
-		_.each(files, function(module, filename) {
+	// Iterate through each module in the set
+	_.each(files, function(module, filename) {
+
+		// Build a single module, treating each source module as containers pieces of a distributed object
+		if (options.aggregate) {
+			// Check that source module is a valid object
+			if (_.isArray(module) || !_.isObject(module)) {
+				throw new Error('Invalid module:' + module);
+			}
+			else _.extend(dictionary, module);
+		}
+
+		// Build the module dictionary
+		else {
 			var keyName = filename;
 
 			if (options.identity !== false) {
@@ -51,9 +77,10 @@ function buildDictionary(options) {
 					keyName = module.identity;
 				}
 			}
-			objects[keyName] = module;
-		});		
+			dictionary[keyName] = module;
+		}
+	});		
 
-	if(!objects) return {};
-	return objects;
+	if(!dictionary) return {};
+	return dictionary;
 }
